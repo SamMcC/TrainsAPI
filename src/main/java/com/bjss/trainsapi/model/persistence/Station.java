@@ -1,11 +1,23 @@
 package com.bjss.trainsapi.model.persistence;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.With;
 import lombok.extern.jackson.Jacksonized;
 import org.hibernate.Hibernate;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.Objects;
@@ -20,6 +32,7 @@ import java.util.stream.Collectors;
 @With
 @AllArgsConstructor
 @NoArgsConstructor
+//TODO: Fix JSON depth to include more information
 public class Station {
     //todo: stations should have neighbouring destination stations,
     // also should introduce a new model object for `Route` which
@@ -37,19 +50,19 @@ public class Station {
     private Coordinates coordinates = Coordinates.builder().build();
 
     @OneToMany(targetEntity = Train.class, mappedBy = "currentLocation")
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    @JsonIgnore
     private Set<Train> inactiveTrains;
 
     @OneToMany(targetEntity = Schedule.class, mappedBy = "destination")
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    @JsonIgnore
     private Set<Schedule> scheduledArrivals;
 
     @OneToMany(targetEntity = Schedule.class, mappedBy = "source")
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    @JsonIgnore
     private Set<Schedule> scheduledDepartures;
 
     @Transient
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    @JsonIgnore
     public Set<Schedule> getDelayedDepartures() {
         if(scheduledDepartures == null) {
             return null;
@@ -62,7 +75,7 @@ public class Station {
     }
 
     @Transient
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    @JsonIgnore
     public Set<Schedule> getDelayedArrivals() {
         if(scheduledArrivals == null) {
             return null;

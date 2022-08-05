@@ -1,10 +1,22 @@
 package com.bjss.trainsapi.model.persistence;
 
-import lombok.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.With;
 import lombok.extern.jackson.Jacksonized;
 import org.hibernate.Hibernate;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -17,6 +29,7 @@ import java.util.Objects;
 @With
 @AllArgsConstructor
 @NoArgsConstructor
+//TODO: Fix JSON depth to include more information
 public class Schedule {
     @Id
     @Column(name = "id", unique = true)
@@ -42,6 +55,7 @@ public class Schedule {
     private Station destination;
 
     @ManyToOne(targetEntity = Train.class)
+    @JsonIgnore
     private Train train;
 
     public boolean departureIsDelayed() {

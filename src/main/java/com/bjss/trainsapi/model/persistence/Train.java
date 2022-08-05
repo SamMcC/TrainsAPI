@@ -33,6 +33,7 @@ import java.util.Objects;
 @Jacksonized
 @AllArgsConstructor
 @NoArgsConstructor
+//TODO: Fix JSON depth to include more information
 public class Train {
     @Id
     @Column(name = "id", unique = true)
@@ -43,10 +44,12 @@ public class Train {
     private String name;
 
     @OneToOne
+    @JsonIgnore
     private Schedule currentSchedule;
 
     @OneToMany(targetEntity = Schedule.class, mappedBy = "train")
     @ToString.Exclude
+    @JsonIgnore
     private List<Schedule> schedules;
 
     @Column
@@ -73,17 +76,18 @@ public class Train {
     }
 
     @Transient
+    @JsonIgnore
     public boolean hasArrived() {
         return this.departureState.equals(DepartureState.ARRIVED);
     }
 
     @Transient
+    @JsonIgnore
     public boolean hasDeparted() {
         return this.departureState.equals(DepartureState.DEPARTED);
     }
 
     @Transient
-    @JsonIgnore
     public String getCurrentTrainDesignation() {
         try {
             String departureTime = currentSchedule.getScheduledDepartureTime().truncatedTo(ChronoUnit.MINUTES).format(DateTimeFormatter.ISO_LOCAL_TIME);
