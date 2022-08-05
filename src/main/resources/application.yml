@@ -1,0 +1,42 @@
+server:
+  port: 8180
+  error:
+    path: "/error"
+  servlet:
+    context-path: "/"
+
+trainsapi:
+  schedules:
+    downtime: "PT2m"
+  initialisation:
+    actor:
+      trainCount: 100
+      stationCount: 10
+
+spring:
+  datasource:
+    driver-class-name: "org.h2.Driver"
+    url: "jdbc:h2:mem:bootapp;DB_CLOSE_DELAY=-1"
+    username: "sa"
+    password:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: "http://localhost:8080/realms/master"
+          jwk-set-uri: "http://localhost:8080/realms/master/protocol/openid-connect/certs"
+      opaque:
+        introspection-uri: "http://localhost:8080/realms/master/protocol/openid-connect/token/introspect"
+        introspection-client-id: "jwtClient"
+        introspection-client-secret: "krUyLALXr462qsSjGpQ9r0DldU9QAKyA"
+  application:
+    name: "Train Test API"
+  logging:
+    file: "logs/dev_app.log"
+    pattern:
+      console: "%d %-5level %logger : %msg%n"
+      file: "%d %-5level [%thread] %logger : %msg%n"
+    level:
+      org.springframework.web: "DEBUG"
+      guru.springframework.controllers: "DEBUG"
+      org.hibernate: "DEBUG"
